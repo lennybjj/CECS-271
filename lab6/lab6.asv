@@ -1,0 +1,97 @@
+%% User inputs
+clear all;clc  
+a =0; %input("Please input a: ");
+b =5; %input("Please input b: ");
+n = 4;%input("Please input the number of segments: ");
+n2 = 0;
+
+% Lab requirement to use even segments for simpsons rule
+% Keep asking the user for an even value to be used
+if( mod(n,2) == 1 )
+    n2 = input("Please input an even n for Simpson's Rule: \n");
+    while(mod(n2, 2) == 1 )
+        n2 = input("Please input an even n for Simpson's Rule: \n");
+    end
+end
+
+
+
+
+%% Coefficients
+% The while loop will make a vector or an array of values that were 
+% inputted by the user to create a function f(x)
+% amount = input("How many values will you be inserting?: ");
+% c = 1;
+% coe = [1:amount];
+% while c-1 ~= amount
+%     p = input("Please enter c value: ");
+%     coe(c)= p;
+%     c = c + 1;  
+% end 
+
+coe = [6 -3 2 -5];
+
+
+%% Sending the values to the function
+fx = f(coe); % Horner's Algorithm to show the function f(x)
+trap(fx, a , b, n);
+% simp(fx, a, b, n);
+
+
+
+%% Horner's Algorithm evaluated
+function y = f(coef) 
+    syms x; 
+    n = length(coef);
+    results = coef(1);
+    for j = 2 : n % starts the for loop
+        results = results*x + coef(j);
+    end % ends the for loop
+   
+    %making it look nice
+    pw = length(coef)-1;
+    str = zeros(1,length(coef),'sym');
+    
+    i = 1; 
+    while i <= length(coef)
+        str(i) = (coef(i)*(x^pw));
+        i = i + 1; 
+        pw = pw - 1;
+    end
+    
+    fprintf("\nThe function is: \n")
+    for p = 1 : length(coef)
+        if( p ~= length(coef) )
+            fprintf(char(str(p)));
+            fprintf(' + ');
+         else
+            fprintf(char(str(p)) );
+        end
+    end
+    fprintf('\n')   
+    y = results;% results saved to y 
+    %return;% return a value to store 
+end
+
+%% Trapezoid Rule
+function trap(func, a, b, nseg)
+    figure(1);
+    x = a:b;
+    hold on;
+    subplot(2,1,1);
+    ezplot(func,[a,b]);
+    subplot(2,1,2);
+    area(x, eval(func));
+    grid on;
+    grid minor;
+    hold off;
+    
+end
+
+%% Simpson's Rule
+% function simp(func, a, b, n)
+%     lab6pt2 = figure;
+%     figure(lab6pt2);
+%     simpFx = func;
+%     xgraph = a:b;
+% end
